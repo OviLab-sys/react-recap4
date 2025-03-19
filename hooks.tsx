@@ -87,3 +87,56 @@ function CorrectedComponent2 ({someProp}){
 //for this, useEffect has been lifted above the condition. 
 // The condition has also been put inside the effect function so that its logic 
 // is only executed when someProp is truthy.
+
+
+///EFFECT CLEANUP
+
+//an effect cleanup returns a function that performs cleanup logic when the component is unmounted. 
+//logic ensures that nothing is left that could cause memory leak. 
+
+//example.
+
+function component3 ({onClickAnywhere}) {
+    useEffect (()=>{
+        function handleClick(){
+            onClickAnywhere();
+        }
+        document.addEventListener("click", handleClick);
+    });
+    return ...
+}
+
+// in the above example, the preceding effect function attaches an event handler to the document element. 
+// The event handler is never detatched though, hence multiple event handlers will become attched to 
+// the document element as the effect is rerun. 
+// This problem is solved by return a cleanup fnction that detaches the event handler as follows:
+
+
+function CorrectedComponent3 ({onClickAnywhere}){
+    useEffect(()=>{
+        function handleClick(){
+            onClickAnywhere();
+        }
+        document.addEventListener("click", listener);
+        return function cleanup(){
+            document.removeEventListener("click", listener);
+        };
+    });
+    return ...;
+}
+
+
+/// another version of the corrected format, using an anonymous arrow function
+
+function correctedComponent3 ({onClickAnywhere}){
+    useEffect(()=> {
+        function handleClick(){
+            onClickAnywhere();
+        }
+        document.addEventListener("click",listener);
+        return ()=>{
+            document.removeEventListener("click", listener);
+        };
+    })
+    return ...
+}
