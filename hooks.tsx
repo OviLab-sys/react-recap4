@@ -140,3 +140,15 @@ function correctedComponent3 ({onClickAnywhere}){
     })
     return ...
 }
+
+// UNDERSTANDING useReducer
+
+//useReducer is an alternative method of managing state. It uses a reducer function for state changes, which  
+// takes in the current state value and returns the new state value. 
+
+    //const [state, dispatch] = useReducer(reducer, initialState);
+
+//In short, the useReducer takes in a reducer function and the initial state value as parameters . It then returns 
+//a tuple containing the current state value and function to dispatch state changes.
+
+//The dispatch function takes in an argument that describes the changes. This object is called an ACTION 
