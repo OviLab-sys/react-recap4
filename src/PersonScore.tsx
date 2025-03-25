@@ -1,5 +1,14 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef, useMemo } from 'react';
 import { getPerson } from './getPerson';
+
+function sillyExpensiveFunction() {
+  console.log('Executing silly function');
+  let sum = 0;
+  for (let i = 0; i < 100000; i++) {
+    sum += i;
+  }
+  return sum;
+}
 
 type State = {
   name: string | undefined;
@@ -33,10 +42,18 @@ export function PersonScore() {
     score: 0,
     loading: true,
   });
+  const addButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     getPerson().then(({ name }) => dispatch({ type: 'initialize', name }));
   }, []);
+  useEffect(() => {
+    if (!loading) {
+      addButtonRef.current?.focus();
+    }
+  }, [loading]);
+
+  const expensiveCalculation = useMemo(() => sillyExpensiveFunction(), []);
   if (loading) {
     return <div>loading...</div>;
   }
@@ -45,7 +62,10 @@ export function PersonScore() {
       <h3>
         {name}, {score}
       </h3>
-      <button onClick={() => dispatch({ type: 'increment' })}>Add</button>
+      <p>{expensiveCalculation}</p>
+      <button ref={addButtonRef} onClick={() => dispatch({ type: 'increment' })}>
+        Add
+      </button>
       <button onClick={() => dispatch({ type: 'decrement' })}>Subtract</button>
       <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
     </div>
